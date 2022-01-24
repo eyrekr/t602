@@ -1,7 +1,13 @@
 package org.demo;
 
+import org.demo.tty.Tty;
+
 public class App {
+
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        final Tty tty = new Tty().init();
+
+        //inputProbe();
+        new TextEditor().start();
     }
 }
