@@ -3,6 +3,7 @@ package org.demo.core;
 import org.demo.effects.BlinkingCursor;
 import org.demo.effects.ChaoticCharacter;
 import org.demo.effects.Effect;
+import org.demo.effects.FpsCounter;
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;
 
@@ -21,7 +22,7 @@ public class TextEditor {
     public TextEditor(Tty tty) {
         this.tty = tty;
         effects.add(new BlinkingCursor());
-        //effects.add(new FpsCounter());
+        effects.add(new FpsCounter());
     }
 
     public void run() throws Exception {
