@@ -71,7 +71,7 @@ public class Layer {
     public Layer setColumn(final int column) {
         final int adjustedColumn = column % this.width;
         this.column = adjustedColumn < 0
-                ? this.width - adjustedColumn
+                ? this.width + adjustedColumn
                 : adjustedColumn;
         return this;
     }
@@ -83,7 +83,7 @@ public class Layer {
     public Layer setRow(final int row) {
         final int adjustedRow = row % this.height;
         this.row = adjustedRow < 0
-                ? this.height - adjustedRow
+                ? this.height + adjustedRow
                 : adjustedRow;
         return this;
     }
