@@ -27,9 +27,6 @@ public class TextEditor {
 
     public TextEditor(Tty tty) {
         this.tty = tty;
-        //effects.add(new RandomDent());
-        //effects.add(new DashingLine());
-        //effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
         effects.add(new BlinkingCursor(500));
     }
@@ -58,7 +55,6 @@ public class TextEditor {
                 case F6 -> switchToTableMode();
                 default -> {
                     if (key.character > 0) {
-                        //effects.add(new ChaoticCharacter(baseLayer.getColumn(), baseLayer.getRow(), 2));
                         this.baseLayer.put(key.character).moveCursorBy(+1, 0);
                     }
                 }
