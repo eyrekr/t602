@@ -19,61 +19,79 @@ public class TextEditor {
     private final LinkedList<Effect> effects = new LinkedList<>();
 
     private boolean quit = false;
+    private Runnable keyboardInputHandler = this::handleStandardKeyboardInput;
+
+    private enum Mode {
+        Standard, Table
+    }
 
     public TextEditor(Tty tty) {
         this.tty = tty;
         //effects.add(new RandomDent());
-        effects.add(new DashingLine());
-        effects.add(new FpsCounter());
+        //effects.add(new DashingLine());
+        //effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
         effects.add(new BlinkingCursor(500));
     }
 
     public void run() throws Exception {
         while (!quit) {
-            handleKeyboardInput();
+            keyboardInputHandler.run();
             applyEffects();
             render();
             Thread.sleep(10L);
         }
     }
 
-    void handleKeyboardInput() {
+    void handleStandardKeyboardInput() {
         final Ascii key = tty.readNonBlocking();
         if (key != Ascii.Nothing) {
             switch (key) {
-                case ArrowUp:
-                    baseLayer.moveCursorBy(0, -1);
-                    break;
-                case ArrowDown:
-                    baseLayer.moveCursorBy(0, +1);
-                    break;
-                case ArrowLeft:
-                    baseLayer.moveCursorBy(-1, 0);
-                    break;
-                case ArrowRight:
-                    baseLayer.moveCursorBy(+1, 0);
-                    break;
-                case Enter:
-                    baseLayer.setColumn(0).moveCursorBy(0, +1);
-                    break;
-                case Backspace:
-                    baseLayer.moveCursorBy(-1, 0).put('\0');
-                    break;
-                case EndOfText:
-                case EndOfTransmission:
-                    quit = true;
-                    break;
-                case F5:
-                    printScreen();
-                    break;
-                default:
+                case ArrowUp -> this.baseLayer.moveCursorBy(0, -1);
+                case ArrowDown -> this.baseLayer.moveCursorBy(0, +1);
+                case ArrowLeft -> this.baseLayer.moveCursorBy(-1, 0);
+                case ArrowRight -> this.baseLayer.moveCursorBy(+1, 0);
+                case Enter -> this.baseLayer.setColumn(0).moveCursorBy(0, +1);
+                case Backspace -> this.baseLayer.moveCursorBy(-1, 0).put('\0');
+                case EndOfText, EndOfTransmission, Escape -> this.quit = true;
+                case F5 -> printScreen();
+                case F6 -> switchToTableMode();
+                default -> {
                     if (key.character > 0) {
-                        effects.add(new ChaoticCharacter(baseLayer.getColumn(), baseLayer.getRow(), 2));
-                        baseLayer.put(key.character).moveCursorBy(+1, 0);
+                        //effects.add(new ChaoticCharacter(baseLayer.getColumn(), baseLayer.getRow(), 2));
+                        this.baseLayer.put(key.character).moveCursorBy(+1, 0);
                     }
+                }
             }
         }
+    }
+
+    void handleTableKeyboardInput() {
+        final Ascii key = tty.readNonBlocking();
+        if (key != Ascii.Nothing) {
+            switch (key) {
+                case ArrowUp -> this.baseLayer.moveCursorBy(0, -1);
+                case ArrowDown -> this.baseLayer.moveCursorBy(0, +1);
+                case ArrowLeft -> this.baseLayer.moveCursorBy(-1, 0);
+                case ArrowRight -> this.baseLayer.moveCursorBy(+1, 0);
+                case Enter -> this.baseLayer.setColumn(0).moveCursorBy(0, +1);
+                case Backspace -> this.baseLayer.moveCursorBy(-1, 0).put('\0');
+                case EndOfText, EndOfTransmission, Escape -> this.quit = true;
+                case F5 -> printScreen();
+                case F6 -> switchToStandardMode();
+                default -> {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    void switchToTableMode() {
+        this.keyboardInputHandler = this::handleTableKeyboardInput;
+    }
+
+    void switchToStandardMode() {
+        this.keyboardInputHandler = this::handleStandardKeyboardInput;
     }
 
     void applyEffects() {
