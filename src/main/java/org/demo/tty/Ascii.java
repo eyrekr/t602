@@ -136,7 +136,7 @@ public enum Ascii {
         this(code, '\0');
     }
 
-    private static long encode(String... string) {
+    static long encode(String... string) {
         long code = 0L;
         for (int i = 0; i < string.length; i++) {
             code |= Long.parseLong(string[i], 16) << (8 * i);
@@ -144,7 +144,7 @@ public enum Ascii {
         return code;
     }
 
-    private static long encode(byte[] bytes) {
+    static long encode(byte[] bytes) {
         long code = 0L;
         for (int i = 0; i < 8; i++) {
             code |= ((long) bytes[i]) << (8 * i);
@@ -152,7 +152,7 @@ public enum Ascii {
         return code;
     }
 
-    static Ascii from(byte[] bytes) {
+    public static Ascii from(byte[] bytes) {
         long code = encode(bytes);
         for (Ascii key : Ascii.values()) {
             if (key.code == code) {

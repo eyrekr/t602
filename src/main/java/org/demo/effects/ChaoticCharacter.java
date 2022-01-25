@@ -13,7 +13,7 @@ public class ChaoticCharacter implements Effect {
     final Random random = new Random();
     int i = 1;
 
-    ChaoticCharacter(int column, int row, int count) {
+    public ChaoticCharacter(int column, int row, int count) {
         this.column = column;
         this.row = row;
         this.count = count;
@@ -24,8 +24,12 @@ public class ChaoticCharacter implements Effect {
         if (i > count) {
             return Lifecycle.Finished;
         }
-        layer.put(column, row, PALETTE.charAt(random.nextInt(PALETTE.length())));
+        layer.put(column, row, randomCharacter());
         i += 1;
         return Lifecycle.Active;
+    }
+
+    char randomCharacter() {
+        return PALETTE.charAt(random.nextInt(PALETTE.length()));
     }
 }

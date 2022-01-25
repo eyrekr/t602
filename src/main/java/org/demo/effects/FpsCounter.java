@@ -11,16 +11,9 @@ public class FpsCounter implements Effect {
         final int timeToRenderOneFrameInMillis = (int) ((System.nanoTime() - lastTick) / 1_000_000L);
         lastTick = System.nanoTime();
         final int fps = timeToRenderOneFrameInMillis > 0 ? 1_000 / timeToRenderOneFrameInMillis : 0;
-        final String text = "FPS: " + fps;
+        final String text = fps +" fps";
 
-        final int row = layer.getRow();
-        final int column = layer.getColumn();
-        layer
-                .setColumn(layer.width - text.length())
-                .setRow(0)
-                .put(text)
-                .setColumn(column)
-                .setRow(row);
+        layer.put(layer.width - text.length(), 0, text);
 
         return Lifecycle.Active;
     }

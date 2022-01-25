@@ -28,7 +28,7 @@ public class Layer {
         return this;
     }
 
-    public Layer clone(final Layer layer) {
+    public Layer becomeExactCopyOf(final Layer layer) {
         assert (width == layer.width);
         assert (height == layer.height);
 
@@ -48,9 +48,20 @@ public class Layer {
         return this;
     }
 
-    public Layer moveCursorBy(final int columnDelta, final int rowDelta) {
+    public boolean isInTheSameStateAs(final Layer layer) {
+        if (this.row != layer.row || this.column != layer.column) {
+            return false;
+        }
+        for (int i = 0; i < Math.min(this.buffer.length, layer.buffer.length); i++) {
+            if (this.buffer[i] != layer.buffer[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-        return this;
+    public Layer moveCursorBy(final int columnDelta, final int rowDelta) {
+        return setColumn(this.column + columnDelta).setRow(this.row + rowDelta);
     }
 
     public int getColumn() {
@@ -78,19 +89,46 @@ public class Layer {
     }
 
     public Layer put(final char character) {
-        this.buffer[this.row * this.width + this.column] = character;
+        return put(this.column, this.row, character);
+    }
+
+    public Layer put(final int column, final int row, final char character) {
+        assert (column >= 0);
+        assert (column < this.width);
+        assert (row >= 0);
+        assert (row < this.height);
+
+        this.buffer[row * this.width + column] = character;
         return this;
     }
 
-    public Layer put(final String text) {
-        final int position = this.row * this.width + this.column;
-        for (int i = 0; i < text.length(); i++) {
-            this.buffer[(position + i) % this.buffer.length] = text.charAt(i);
+    public Layer put(final String string) {
+        return put(this.column, this.row, string);
+    }
+
+    public Layer put(final int column, final int row, final String string) {
+        assert (column >= 0);
+        assert (column < this.width);
+        assert (row >= 0);
+        assert (row < this.height);
+
+        final int position = row * this.width + column;
+        for (int i = 0; i < string.length(); i++) {
+            this.buffer[(position + i) % this.buffer.length] = string.charAt(i);
         }
         return this;
     }
 
     public char get() {
         return this.buffer[this.row * this.width + this.column];
+    }
+
+    public char get(final int column, final int row) {
+        assert (column >= 0);
+        assert (column < this.width);
+        assert (row >= 0);
+        assert (row < this.height);
+
+        return this.buffer[row * this.width + column];
     }
 }

@@ -4,20 +4,18 @@ import java.util.Arrays;
 
 public final class Tty {
     private static final String CSI = "\033[";
-    private final byte[] buffer = new byte[32];
+
+    private final byte[] systemInBuffer = new byte[32];
 
     public Tty init() {
-        installShutdownHook()
+        restoreTtyStateOnExit()
                 .rawMode()
                 .hideCursor()
                 .clearScreen();
         return this;
     }
 
-    /**
-     * Restore the terminal state on exit.
-     */
-    private Tty installShutdownHook() {
+    private Tty restoreTtyStateOnExit() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             cookedMode().showCursor();
         }));
@@ -27,9 +25,9 @@ public final class Tty {
     public Ascii readNonBlocking() {
         try {
             if (System.in.available() > 0) {
-                Arrays.fill(buffer, (byte) 0);
-                System.in.read(buffer);
-                return Ascii.from(buffer);
+                Arrays.fill(this.systemInBuffer, (byte) 0);
+                System.in.read(this.systemInBuffer);
+                return Ascii.from(this.systemInBuffer);
             }
             return Ascii.Nothing;
         } catch (Exception e) {
@@ -37,17 +35,11 @@ public final class Tty {
         }
     }
 
-    public Tty render(final int width, final int height, final char[] buffer) {
-        moveCursorToTopLeftCorner();
-        for (int row = 0; row < height; row++) {
-            for (int column = 0; column < width; column++) {
-                final int i = width * row + column;
-                final char ch = buffer[i];
-                System.out.print(ch == Ascii.Null.character ? ' ' : ch);
-            }
-            System.out.print("\r\n");
+    public int readNonBlockingRaw(final byte[] buffer) throws Exception {
+        if (System.in.available() > 0) {
+            return System.in.read(buffer);
         }
-        return this;
+        return 0;
     }
 
     private Tty rawMode() {
@@ -84,12 +76,12 @@ public final class Tty {
     //     return new Size(10,10);
     // }
 
-    private Tty clearScreen() {
+    public Tty clearScreen() {
         System.out.print("\033[2J");
         return this;
     }
 
-    private Tty moveCursorToTopLeftCorner() {
+    public Tty moveCursorToTopLeftCorner() {
         System.out.print("\033[H");
         return this;
     }
@@ -102,27 +94,18 @@ public final class Tty {
      * @param column column, 1-based
      * @param row    row, 1-based
      */
-    private Tty moveCursorTo(int column, int row) {
+    public Tty moveCursorTo(int column, int row) {
         System.out.print("\033[" + row + ";" + column + "H");
         return this;
     }
 
-    private Tty hideCursor() {
+    public Tty hideCursor() {
         System.out.print("\033[?25l");
         return this;
     }
 
-    private Tty showCursor() {
+    public Tty showCursor() {
         System.out.print("\033[?25h");
         return this;
-    }
-
-    private static char firstNotNull(char... characters) {
-        for (char ch : characters) {
-            if (ch != Ascii.Null.character) {
-                return ch;
-            }
-        }
-        return ' ';
     }
 }
