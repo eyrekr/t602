@@ -8,7 +8,7 @@ public class DashingLine implements Effect {
     private long timestamp = System.currentTimeMillis();
 
     @Override
-    public Lifecycle apply(final Layer layer) {
+    public State apply(final Layer layer) {
         final int row = layer.getRow();
         final char ch = layer.get(this.magnifiedColumn, row);
         if (Character.isLowerCase(ch)) {
@@ -18,6 +18,6 @@ public class DashingLine implements Effect {
             this.magnifiedColumn = (this.magnifiedColumn + 1) % layer.width;
             this.timestamp = System.currentTimeMillis();
         }
-        return Lifecycle.Active;
+        return State.Active;
     }
 }

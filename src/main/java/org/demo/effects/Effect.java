@@ -5,9 +5,9 @@ import org.demo.core.Layer;
 @FunctionalInterface
 public interface Effect {
 
-    Lifecycle apply(final Layer layer);
+    State apply(final Layer layer);
 
-    enum Lifecycle {
+    enum State {
         Active, Finished
     }
 }

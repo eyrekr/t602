@@ -9,7 +9,7 @@ public class FpsCounter implements Effect {
     private int i = 0;
 
     @Override
-    public Lifecycle apply(final Layer layer) {
+    public State apply(final Layer layer) {
         final int durationInMillis = (int) ((System.nanoTime() - this.lastTime) / 1_000_000L);
         this.lastTime = System.nanoTime();
         this.durations[this.i] = durationInMillis;
@@ -22,6 +22,6 @@ public class FpsCounter implements Effect {
         final String text = (sum / this.durations.length) + "ms";
         layer.put(layer.width - text.length(), 0, text);
 
-        return Lifecycle.Active;
+        return State.Active;
     }
 }

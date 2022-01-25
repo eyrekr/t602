@@ -20,13 +20,13 @@ public class ChaoticCharacter implements Effect {
     }
 
     @Override
-    public Lifecycle apply(final Layer layer) {
+    public State apply(final Layer layer) {
         if (i > count) {
-            return Lifecycle.Finished;
+            return State.Finished;
         }
         layer.put(column, row, randomCharacter());
         i += 1;
-        return Lifecycle.Active;
+        return State.Active;
     }
 
     char randomCharacter() {

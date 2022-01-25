@@ -12,11 +12,11 @@ public class BlinkingCursor implements Effect {
     }
 
     @Override
-    public Lifecycle apply(final Layer layer) {
+    public State apply(final Layer layer) {
         final boolean appears = (System.currentTimeMillis() / delayInMs) % 2 == 0;
         if (appears) {
             layer.put('_');
         }
-        return Lifecycle.Active;
+        return State.Active;
     }
 }

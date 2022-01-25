@@ -22,6 +22,7 @@ public class TextEditor {
 
     public TextEditor(Tty tty) {
         this.tty = tty;
+        //effects.add(new RandomDent());
         effects.add(new DashingLine());
         effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
@@ -79,8 +80,8 @@ public class TextEditor {
         effectsLayer.becomeExactCopyOf(baseLayer);
         for (var iterator = effects.iterator(); iterator.hasNext(); ) {
             final Effect effect = iterator.next();
-            final Effect.Lifecycle lifecycle = effect.apply(effectsLayer);
-            if (lifecycle == Effect.Lifecycle.Finished) {
+            final Effect.State state = effect.apply(effectsLayer);
+            if (state == Effect.State.Finished) {
                 iterator.remove();
             }
         }
