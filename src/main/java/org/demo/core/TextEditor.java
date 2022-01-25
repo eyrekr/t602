@@ -22,6 +22,7 @@ public class TextEditor {
 
     public TextEditor(Tty tty) {
         this.tty = tty;
+        effects.add(new DashingLine());
         effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
         effects.add(new BlinkingCursor(500));

@@ -5,13 +5,13 @@ import org.demo.core.Layer;
 import java.util.Random;
 
 public class ChaoticCharacter implements Effect {
-    static final String PALETTE = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_+";
+    private static final String PALETTE = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_+";
 
-    final int column;
-    final int row;
-    final int count;
-    final Random random = new Random();
-    int i = 1;
+    private final int column;
+    private final int row;
+    private final int count;
+    private final Random random = new Random();
+    private int i = 1;
 
     public ChaoticCharacter(int column, int row, int count) {
         this.column = column;
