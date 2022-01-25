@@ -1,5 +1,7 @@
 package org.demo.effects;
 
+import org.demo.core.Layer;
+
 import java.util.Random;
 
 public class ChaoticCharacter implements Effect {
@@ -18,12 +20,12 @@ public class ChaoticCharacter implements Effect {
     }
 
     @Override
-    public boolean apply(Layer layer) {
+    public Lifecycle apply(final Layer layer) {
         if (i > count) {
-            return false;
+            return Lifecycle.Finished;
         }
         layer.put(column, row, PALETTE.charAt(random.nextInt(PALETTE.length())));
         i += 1;
-        return true;
+        return Lifecycle.Active;
     }
 }

@@ -2,7 +2,7 @@ package org.demo.tty;
 
 import java.util.Arrays;
 
-public class Tty {
+public final class Tty {
     private static final String CSI = "\033[";
     private final byte[] buffer = new byte[32];
 

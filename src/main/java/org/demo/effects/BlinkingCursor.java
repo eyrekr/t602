@@ -1,14 +1,16 @@
 package org.demo.effects;
 
+import org.demo.core.Layer;
+
 public class BlinkingCursor implements Effect {
 
     @Override
-    public boolean apply(Layer layer) {
+    public Lifecycle apply(final Layer layer) {
         boolean appears = (System.currentTimeMillis() / 500) % 2 == 0;
         if (appears) {
             layer.put('_');
         }
-        return true;
+        return Lifecycle.Active;
     }
 
 }

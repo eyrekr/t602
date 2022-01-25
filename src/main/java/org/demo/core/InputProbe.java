@@ -1,15 +1,15 @@
-package org.demo;
+package org.demo.core;
 
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;
 
+/**
+ * Intended for probing values of keys;
+ * press a key and see how it is encoded.
+ */
 public class InputProbe {
 
-    /**
-     * Intended for probing values of keys;
-     * press a key and see how it is encoded.
-     */
-    void inputProbe() throws Exception {
+    public void inputProbe() throws Exception {
         while (true) {
             Ascii key = Tty.readNonBlocking();
             if (key != Ascii.Nothing) {

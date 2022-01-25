@@ -1,34 +1,47 @@
-package org.demo;
+package org.demo.core;
+
+import org.demo.effects.ChaoticCharacter;
+import org.demo.effects.Effect;
+import org.demo.tty.Ascii;
+import org.demo.tty.Tty;
+
+import java.util.LinkedList;
 
 public class TextEditor {
-    Layer layer = new Layer(80, 25);
-    Layer overlay = new Layer(80, 25); // for animation magic
-    boolean quit = false;
 
-    LinkedList<Effect> effects = new LinkedList<>();
+    private final Tty tty;
+    private final Layer layer = new Layer(80, 25);
+    private final Layer overlay = new Layer(80, 25); // for animation magic
+    private final LinkedList<Effect> effects = new LinkedList<>();
+
+    private boolean quit = false;
+
+    public TextEditor(Tty tty) {
+        this.tty = tty;
+    }
 
     void handleKeyboardInput() {
-        Ascii key = Console.readNonBlocking();
+        final Ascii key = tty.readNonBlocking();
         if (key != Ascii.Nothing) {
             layer.dirty = true;
             switch (key) {
                 case ArrowUp:
-                    layer.move(0, -1);
+                    layer.moveCursorBy(0, -1);
                     break;
                 case ArrowDown:
-                    layer.move(0, +1);
+                    layer.moveCursorBy(0, +1);
                     break;
                 case ArrowLeft:
-                    layer.move(-1, 0);
+                    layer.moveCursorBy(-1, 0);
                     break;
                 case ArrowRight:
-                    layer.move(+1, 0);
+                    layer.moveCursorBy(+1, 0);
                     break;
                 case Enter:
                     layer.column(0).move(0, +1);
                     break;
                 case Backspace:
-                    layer.move(-1, 0).put('\0');
+                    layer.moveCursorBy(-1, 0).put('\0');
                     break;
                 case EndOfText:
                 case EndOfTransmission:
@@ -37,7 +50,7 @@ public class TextEditor {
                 default:
                     if (key.character > 0) {
                         effects.add(new ChaoticCharacter(layer.column, layer.row, 3));
-                        layer.put(key.character).move(+1, 0);
+                        layer.put(key.character).moveCursorBy(+1, 0);
                     } else {
                         layer.dirty = false;
                     }
@@ -46,7 +59,7 @@ public class TextEditor {
     }
 
     void applyEffects() {
-        overlay.erase().column(layer.column).row(layer.row);
+        overlay.reset().column(layer.column).row(layer.row);
         for (var iterator = effects.iterator(); iterator.hasNext(); ) {
             Effect effect = iterator.next();
             if (!effect.apply(overlay)) {
@@ -62,7 +75,7 @@ public class TextEditor {
             handleKeyboardInput();
             applyEffects();
             if (layer.dirty || overlay.dirty) {
-                Console.render(layer, overlay);
+                tty.render(layer, overlay);
                 layer.dirty = false;
                 overlay.dirty = false;
             }

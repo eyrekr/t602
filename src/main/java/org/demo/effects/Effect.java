@@ -1,11 +1,13 @@
 package org.demo.effects;
 
+import org.demo.core.Layer;
+
 @FunctionalInterface
 public interface Effect {
-    /**
-     * Do something to layer.
-     *
-     * @return false if the effect is no longer applicable and shall be removed
-     */
-    boolean apply(Layer layer);
+
+    Lifecycle apply(final Layer layer);
+
+    enum Lifecycle {
+        Active, Finished
+    }
 }
