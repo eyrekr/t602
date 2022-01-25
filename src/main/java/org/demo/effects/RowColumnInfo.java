@@ -6,7 +6,7 @@ public class RowColumnInfo implements Effect {
 
     @Override
     public Lifecycle apply(final Layer layer) {
-        final String info = layer.getRow() + ":" + layer.getColumn();
+        final String info = (layer.getRow() + 1) + ":" + (layer.getColumn() + 1);
         layer.put(0, layer.height - 1, info);
         return Lifecycle.Active;
     }

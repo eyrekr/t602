@@ -18,9 +18,9 @@ public class TextEditor {
 
     public TextEditor(Tty tty) {
         this.tty = tty;
-        effects.add(new BlinkingCursor());
         effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
+        effects.add(new BlinkingCursor());
     }
 
     public void run() throws Exception {
