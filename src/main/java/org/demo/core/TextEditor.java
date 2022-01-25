@@ -1,9 +1,6 @@
 package org.demo.core;
 
-import org.demo.effects.BlinkingCursor;
-import org.demo.effects.ChaoticCharacter;
-import org.demo.effects.Effect;
-import org.demo.effects.FpsCounter;
+import org.demo.effects.*;
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;
 
@@ -23,6 +20,7 @@ public class TextEditor {
         this.tty = tty;
         effects.add(new BlinkingCursor());
         effects.add(new FpsCounter());
+        effects.add(new RowColumnInfo());
     }
 
     public void run() throws Exception {
