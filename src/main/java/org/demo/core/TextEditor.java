@@ -4,6 +4,10 @@ import org.demo.effects.*;
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 
 public class TextEditor {
@@ -20,7 +24,7 @@ public class TextEditor {
         this.tty = tty;
         effects.add(new FpsCounter());
         effects.add(new RowColumnInfo());
-        effects.add(new BlinkingCursor());
+        effects.add(new BlinkingCursor(500));
     }
 
     public void run() throws Exception {
@@ -58,9 +62,12 @@ public class TextEditor {
                 case EndOfTransmission:
                     quit = true;
                     break;
+                case F5:
+                    printScreen();
+                    break;
                 default:
                     if (key.character > 0) {
-                        effects.add(new ChaoticCharacter(baseLayer.getColumn(), baseLayer.getRow(), 3));
+                        effects.add(new ChaoticCharacter(baseLayer.getColumn(), baseLayer.getRow(), 2));
                         baseLayer.put(key.character).moveCursorBy(+1, 0);
                     }
             }
@@ -93,5 +100,19 @@ public class TextEditor {
         }
 
         lastRenderedLayer.becomeExactCopyOf(effectsLayer);
+    }
+
+    void printScreen() {
+        final Path path = Paths.get("target/screenshot.txt");
+        try {
+            Files.writeString(
+                    path,
+                    baseLayer.toString(),
+                    StandardOpenOption.WRITE,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND);
+        } catch (final Exception e) {
+            System.out.print(e.getMessage());
+        }
     }
 }

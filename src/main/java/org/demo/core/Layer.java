@@ -131,4 +131,17 @@ public class Layer {
 
         return this.buffer[row * this.width + column];
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        for (int row = 0; row < this.height; row++) {
+            for (int column = 0; column < this.width; column++) {
+                final char ch = get(column, row);
+                builder.append(ch < 32 ? ' ' : ch);
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }
