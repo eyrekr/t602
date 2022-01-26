@@ -1,4 +1,4 @@
-package org.demo.core;
+package org.demo;
 
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;

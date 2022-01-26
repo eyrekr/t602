@@ -1,5 +1,7 @@
-package org.demo.core;
+package org.demo;
 
+import org.demo.core.Layer;
+import org.demo.core.Blueprint;
 import org.demo.effects.*;
 import org.demo.tty.Ascii;
 import org.demo.tty.Tty;
@@ -14,6 +16,7 @@ public class TextEditor {
 
     private final Tty tty;
     private final Layer baseLayer = new Layer(80, 25);
+    private final Blueprint blueprint = new Blueprint(baseLayer);
     private final Layer effectsLayer = new Layer(80, 25);
     private final Layer lastRenderedLayer = new Layer(80, 25);
     private final LinkedList<Effect> effects = new LinkedList<>();
@@ -21,14 +24,10 @@ public class TextEditor {
     private boolean quit = false;
     private Runnable keyboardInputHandler = this::handleStandardKeyboardInput;
 
-    private enum Mode {
-        Standard, Table
-    }
-
     public TextEditor(Tty tty) {
         this.tty = tty;
         effects.add(new RowColumnInfo());
-        effects.add(new BlinkingCursor(500));
+        effects.add(new BlinkingCursor('_', 500));
     }
 
     public void run() throws Exception {
@@ -66,12 +65,11 @@ public class TextEditor {
         final Ascii key = tty.readNonBlocking();
         if (key != Ascii.Nothing) {
             switch (key) {
-                case ArrowUp -> this.baseLayer.moveCursorBy(0, -1);
-                case ArrowDown -> this.baseLayer.moveCursorBy(0, +1);
-                case ArrowLeft -> this.baseLayer.moveCursorBy(-1, 0);
-                case ArrowRight -> this.baseLayer.moveCursorBy(+1, 0);
-                case Enter -> this.baseLayer.setColumn(0).moveCursorBy(0, +1);
-                case Backspace -> this.baseLayer.moveCursorBy(-1, 0).put('\0');
+                case ArrowUp -> this.blueprint.move(Blueprint.Direction.Up);
+                case ArrowDown -> this.blueprint.move(Blueprint.Direction.Down);
+                case ArrowLeft -> this.blueprint.move(Blueprint.Direction.Left);
+                case ArrowRight -> this.blueprint.move(Blueprint.Direction.Right);
+                case Backspace -> this.blueprint.setMode(Blueprint.Mode.Erase);
                 case EndOfText, EndOfTransmission, Escape -> this.quit = true;
                 case F5 -> printScreen();
                 case F6 -> switchToStandardMode();

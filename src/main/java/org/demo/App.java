@@ -1,6 +1,5 @@
 package org.demo;
 
-import org.demo.core.TextEditor;
 import org.demo.tty.Tty;
 
 public class App {

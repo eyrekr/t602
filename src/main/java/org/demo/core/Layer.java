@@ -12,7 +12,7 @@ public class Layer {
     private int row = 0;
     private int column = 0;
 
-    Layer(final int width, final int height) {
+    public Layer(final int width, final int height) {
         assert (width > 0);
         assert (height > 0);
 
